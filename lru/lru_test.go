@@ -20,3 +20,7 @@ func TestGet(t *testing.T) {
 		t.Fatalf("cache miss key2 failed")
 	}
 }
+
+func TestRemoveOldestUse(t *testing.T){
+		
+}

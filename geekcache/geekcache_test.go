@@ -49,12 +49,12 @@ func TestGet(t *testing.T) {
 			t.Fatal("failed to get value of Tom")
 		}
 		if _, err := gee.Get(k); err != nil || loadCounts[k] > 1 {
-			t.Fatal("cache %s miss", k)
+			t.Fatal("cache miss", k)
 		}
 	}
 
-	if view, err := gee.Get("unkown"); err != nil {
-		t.Fatal("the value of unkown should be empty but %s got", view)
+	if view, err := gee.Get("unkown"); err == nil {
+		t.Fatal("the value of unkown should be empty but got", view)
 	}
 
 }

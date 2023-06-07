@@ -1,18 +1,29 @@
 package main
 
-import(
+import (
+	"fmt"
+	"geekcache"
 	"log"
 	"net/http"
 )
 
-type server int
-
-func (h *server)ServeHTTP(w http.ResponseWriter, r *http.Request){
-	log.Println(r.URL.Path)
-	w.Write([]byte("Hello World!"))
+var db = map[string]string{
+	"Tom":  "630",
+	"Jack": "589",
+	"Sam":  "567",
 }
 
-func main(){
-	var s server
-	http.ListenAndServe("localhost:9999",&s)
+func main() {
+	geekcache.NewGroup("scores", 2<<10, geekcache.GetterFunc(
+		func(key string) ([]byte, error) {
+			log.Println("[SlowDB] search key", key)
+			if v, ok := db[key]; ok {
+				return []byte(v), nil
+			}
+			return nil, fmt.Errorf("%s not existed", key)
+		}))
+	addr := "localhost:9999"
+	peers := geekcache.NewHTTPPool(addr)
+	log.Println("geecache is running at", addr)
+	log.Fatal(http.ListenAndServe(addr, peers))
 }
